@@ -10,8 +10,6 @@ import pandas as pd
 
 # data = pd.read_csv('input/input_day2.txt', header=None)
 data = pd.read_csv('input/data_JM.txt', header=None)
-# data = data[0].str.split('\s\|\s', expand=True)
-
 
 safe_count_all = 0
 for i, row in data.iterrows():
