@@ -20,9 +20,6 @@ class Guard:
             '<': [0, -1]
         }
 
-        self.guard_map = []
-        self.guard_map_size = []
-
         self.load_map(input_data)
         self.visited_locations = np.zeros(
             [self.guard_map.shape[0], self.guard_map.shape[1]])
@@ -35,7 +32,7 @@ class Guard:
         print(self.guard_map)
 
     def get_loc(self):
-        for key in self.guard_dirs.keys():
+        for key in self.guard_dirs:
             loc_temp = np.where(self.guard_map == key)
 
             if np.any(loc_temp):
@@ -47,13 +44,11 @@ class Guard:
 
         return self.loc, self.direc, self.direc_key
 
-    def add_steps(self, steps):
-        self.steps += steps
-
     def check_next(self):
         stop_run = False
         idx_next_field = self.loc+self.direc
-        if 0 <= idx_next_field[0] <= self.guard_map.shape[0] - 1 and 0 <= idx_next_field[1] <= self.guard_map.shape[1]-1:
+        if (0 <= idx_next_field[0] <= self.guard_map.shape[0] - 1 and
+                0 <= idx_next_field[1] <= self.guard_map.shape[1] - 1):
             next_field = self.guard_map[idx_next_field[0], idx_next_field[1]]
         else:
             stop_run = True
@@ -61,7 +56,7 @@ class Guard:
 
         return idx_next_field, next_field, stop_run
 
-    def step_forward(self, next_idx, next_field):
+    def step_forward(self, next_idx):
         self.guard_map[next_idx[0], next_idx[1]] = self.direc_key
         self.guard_map[self.loc[0], self.loc[1]] = 'X'
         self.visited_locations[self.loc[0], self.loc[1]] += 1
@@ -81,8 +76,8 @@ class Guard:
         self.direc = np.array(self.guard_dirs[self.direc_key])
 
     def count_visits(self):
-        X_counts = np.where(self.guard_map == 'X')
-        return len(X_counts[0])
+        x_counts = np.where(self.guard_map == 'X')
+        return len(x_counts[0])
 
     def walk(self):
         # self.print_map()
@@ -92,21 +87,20 @@ class Guard:
             if stop_run:
                 self.guard_map[self.loc[0], self.loc[1]] = 'X'
                 return self.count_visits()
-            elif np.max(self.visited_locations) > 4:
+            if np.max(self.visited_locations) > 4:
                 return -1
-
-            elif not next_field == '.' and not next_field == 'X':
+            if next_field != '.' and next_field != 'X':
                 self.rotate()
             else:
-                self.step_forward(next_idx, next_field)
+                self.step_forward(next_idx)
 
 
 class Day6:
     def __init__(self, file_name_input):
         self.file_name = file_name_input
 
-    def load_text(self, file_name):
-        file = open(file_name, "r")
+    def load_text(self, file_name_load):
+        file = open(file_name_load, "r")
         data_raw = file.read().split('\n')
         file.close()
         data_output = []
@@ -120,7 +114,7 @@ class Day6:
         guard = Guard(data)
         guard.walk()
         answer = guard.count_visits()
-        self.guard = guard
+        del guard
 
         print(f'Answer part 1 is : {answer}')
 
@@ -135,7 +129,7 @@ class Day6:
         obsticals = np.where(data_walked == 'X')
 
         count_loops = 0
-        for i, ele in enumerate(obsticals[0]):
+        for i in range(len(obsticals[0])):
             print(f'progress :{
                   i+1}/{len(obsticals[0])} {(i+1)/len(obsticals[0])*100}% ')
             obs = [obsticals[0][i], obsticals[1][i]]
