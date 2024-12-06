@@ -113,6 +113,11 @@ class Day5:
         data = self.load_text(self.file_name)
         rules = self.get_rules(data)
         lines = self.get_lines(data)
+        line_test = []
+        for i in range(1,100):
+            line_test.append(i)
+        lines = line_test
+        print(lines)
         X, incorrect_lines = self.check_all_lines(lines,rules)
         corrected_lines = self.correct_all_lines(incorrect_lines, rules)
         i=0
