@@ -27,7 +27,6 @@ class Guard:
 
         self.load_map(input_data)
         self.visited_locations = np.zeros([self.guard_map.shape[0],self.guard_map.shape[1]])
-        # print(self.visited_locations)
         self.get_loc()
             
     def load_map(self,data_input):
@@ -44,7 +43,6 @@ class Guard:
                 break
         
         self.loc = np.array([loc_temp[0][0],loc_temp[1][0]])
-        # self.loc = list(loc)
         self.direc = np.array(self.guard_dirs[key])[0:2]
         self.direc_key = np.array(key)
 
@@ -160,5 +158,5 @@ if __name__ == "__main__":
     # file_name = 'input/input_day6_test.txt' 
 
     app = Day5(file_name)
-    # app.part1()
+    app.part1()
     app.part2()
