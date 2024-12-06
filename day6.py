@@ -102,7 +102,7 @@ class Guard:
                 self.step_forward(next_idx, next_field)
               
     
-class Day5:
+class Day6:
     def __init__(self,file_name_input):
         self.file_name = file_name_input
 
@@ -157,6 +157,6 @@ if __name__ == "__main__":
     file_name = 'input/input_day6.txt' 
     # file_name = 'input/input_day6_test.txt' 
 
-    app = Day5(file_name)
+    app = Day6(file_name)
     app.part1()
     app.part2()
