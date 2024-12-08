@@ -6,6 +6,7 @@ Created on Tue Dec  3 09:18:46 2024
 """
 import numpy as np
 
+import AoCFramework as AoC
 
 class Guard:
     def __init__(self, input_data):
