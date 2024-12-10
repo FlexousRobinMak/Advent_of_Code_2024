@@ -6,8 +6,6 @@ Created on Tue Dec  3 09:18:46 2024
 """
 import numpy as np
 
-import AoCFramework as AoC
-
 class Guard:
     def __init__(self, input_data):
         self.loc = []
@@ -120,8 +118,9 @@ class Day6:
         print(f'Answer part 1 is : {answer}')
 
     def part2(self):
-        data = self.load_text(self.file_name)
+        data_raw = self.load_text(self.file_name)
 
+        data = data_raw.copy()
         guard = Guard(data)
         answer = guard.walk()
         data_walked = guard.guard_map
@@ -135,7 +134,8 @@ class Day6:
                   i+1}/{len(obsticals[0])} {(i+1)/len(obsticals[0])*100}% ')
             obs = [obsticals[0][i], obsticals[1][i]]
             # no clue why data keeps changing
-            data = self.load_text(self.file_name)
+            # data = self.load_text(self.file_name)
+            data = data_raw.copy()
 
             guard = Guard(data)
             guard.guard_map[obs[0], obs[1]] = 'O'
@@ -149,8 +149,8 @@ class Day6:
 
 
 if __name__ == "__main__":
-    # file_name = 'input/input_day6.txt'
-    file_name = 'input/input_day6_test.txt'
+    file_name = 'input/input_day6.txt'
+    # file_name = 'input/input_day6_test.txt'
 
     app = Day6(file_name)
     app.part1()
