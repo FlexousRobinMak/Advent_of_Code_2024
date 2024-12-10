@@ -67,10 +67,10 @@ class Diskmap:
 
         return new_diskmap
      
-    def rearange(self, diskmap):
+    def rearange_old(self, diskmap):
         diskmap_temp = diskmap
         # idx = np.find(diskmap,'.')
-        print(diskmap)
+        # print(diskmap)
         # idx = np.flatnonzero(diskmap == '.')
         diskmap_idx = np.arange(0,len(diskmap),1)
         diskmap_space = diskmap[np.char.find(diskmap, sub = '.', start = 0, end = None)>=0]
@@ -79,26 +79,80 @@ class Diskmap:
         diskmap_nospace = diskmap[np.char.find(diskmap, sub = '.', start = 0, end = None)<0]
         diskmap_nospace_idx = diskmap_idx[np.char.find(diskmap, sub = '.', start = 0, end = None)<0]
         
-        # print(diskmap_nospace)
+        
+        
+        # print(diskmap_nospace,diskmap_nospace_idx)
+        # print(diskmap_space,diskmap_space_idx)
         # print(diskmap_space)
         
-        for i_space,ele_space in enumerate(diskmap_space):
-            for i_nospace,ele_nospace in enumerate(diskmap_nospace[::-1]):
-                print(ele_nospace,ele_space)
+        for X,i_space in enumerate(diskmap_space_idx):
+            for X,i_nospace in enumerate(diskmap_nospace_idx[::-1]):
+                print(diskmap[i_space],diskmap[i_nospace])
                 # print(len(ele_space),len(ele_nospace))
-                if len(ele_space) == len(ele_nospace):
+                if len(diskmap[i_space]) >= len(diskmap[i_nospace]):
                     print('through')
-                    ix1 = diskmap_space_idx[i_space]
-                    ix2 = -diskmap_nospace_idx[i_nospace]-1
+                    ix1 = i_space
+                    ix2 = i_nospace
+                    print(ix1, ix2,i_nospace)
 
                     # if ix1 < ix2:
                     #     break
                     # diskmap_nospace
                     diskmap_temp[[ix1, ix2]] = diskmap_temp[[ix2, ix1]]
-                    diskmap_nospace = np.delete(diskmap_nospace,i_nospace)
+                    # diskmap_nospace = np.delete(diskmap_nospace,i_nospace)
                     print(diskmap_temp)        
 
                     break
+
+    def rearange(self, diskmap):
+        # idx = np.find(diskmap,'.')
+        print(diskmap)
+        # idx = np.flatnonzero(diskmap == '.')
+
+        diskmap_idx = np.arange(0,len(diskmap),1)
+        diskmap_nospace = diskmap[np.char.find(diskmap, sub = '.', start = 0, end = None)<0]
+        diskmap_nospace_idx = diskmap_idx[np.char.find(diskmap, sub = '.', start = 0, end = None)<0]
+        diskmap_space = diskmap[np.char.find(diskmap, sub = '.', start = 0, end = None)>=0]
+        diskmap_space_idx = diskmap_idx[np.char.find(diskmap, sub = '.', start = 0, end = None)>=0]
+        
+        return self.reareange_loop(diskmap,diskmap_nospace,diskmap_nospace_idx)
+        
+    
+    def reareange_loop(self,diskmap,diskamp_nospace,diskmap_nospace_idx):
+        diskmap_temp = diskmap
+
+        diskmap_idx = np.arange(0,len(diskmap),1)
+        diskmap_space = diskmap[np.char.find(diskmap, sub = '.', start = 0, end = None)>=0]
+        diskmap_space_idx = diskmap_idx[np.char.find(diskmap, sub = '.', start = 0, end = None)>=0]
+        for X,i_space in enumerate(diskmap_space_idx):
+            for idx_ele,i_nospace in enumerate(diskmap_nospace_idx[::-1]):
+                print(diskmap[i_space],diskmap[i_nospace])
+                # print(len(ele_space),len(ele_nospace))
+                diff_len1 = len(diskmap[i_space]) - len(diskmap[i_nospace])
+                diff_len2 = len(diskmap[i_nospace]) - len(diskmap[i_space])
+                print(diff_len1)
+                if diff_len1 >= 0 :
+                    print('through')
+                    ele = diskmap[i_nospace]
+                    ix1 = i_space
+                    ix2 = i_nospace
+                    print(ix1, ix2,i_nospace)
+                    diskmap_temp[i_space] = '.'*diff_len1 
+                    if len(diskmap[i_space]) > 0:
+                        diskmap_temp[i_nospace] = '.'*diff_len2  
+                    
+                    diskmap_temp = np.delete(diskmap_temp, i_nospace)
+                    diskmap_temp = np.insert(diskmap_temp, i_space, ele)
+                    
+                    print(diskmap_temp)        
+                    
+                    # diskamp_nospace = np.delete(diskamp_nospace,idx_ele)
+                    # diskmap_nospace_idx = np.delete(diskmap_nospace_idx,idx_ele)
+                                        
+                    self.reareange_loop(diskmap_temp,diskamp_nospace,diskmap_nospace_idx)
+
+                    break
+        return diskmap_temp
                 
     
     def get_diskmap_part1(self):
@@ -110,6 +164,7 @@ class Diskmap:
     def get_diskmap_part2(self):
         diskmap_temp = self.get_step1(self.data)
         diskmap_temp = self.group_string(diskmap_temp)
+        self.diskmap_last = []
         diskmap_temp = self.rearange(diskmap_temp)
         # self.diskmap_temp = diskmap_temp
         print(diskmap_temp)

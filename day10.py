@@ -26,12 +26,12 @@ class TopoMap:
         loc_end = np.where(self.map == 9)
         return loc_end
 
-    def get_possible_opt(self,start):
+    def get_possible_opt(self,loc):
         if len(self.opt_temp) <= 0:
-            loc_val = self.map[start[0],start[1]]
-            self.opt_temp = np.array([loc_val,start[0],start[1]])
+            loc_val = self.map[loc[0],loc[1]]
+            self.opt_temp = np.array([loc_val,loc[0],loc[1]])
             
-        opt_next = self.check_next(start)
+        opt_next = self.check_next(loc)
         for ele in opt_next:
             self.get_possible_opt(ele)
             
@@ -63,7 +63,7 @@ class TopoMap:
             
             sol_unique = np.unique(self.opt_temp , axis=0)
             sol = self.opt_temp
-
+            print(sol)
             unique, counts = np.unique(sol_unique[:,0], return_counts=True)
             sol_count_unique = dict(zip(unique, counts))
             ans.append(sol_count_unique[9])
@@ -96,21 +96,27 @@ class Day10:
         
         topomap = TopoMap(data)
         self.x = topomap
-        ans, count = topomap.get_sol()
+        ans, X = topomap.get_sol()
 
         ans = np.sum(ans)
         print(f'Answer part 1 is : {ans}')
-        print(f'Answer part 2 is : {count}')
 
     def part2(self):
+        data = self.load_text(self.file_name)
+        
+        topomap = TopoMap(data)
+        self.x = topomap
+        ans, count = topomap.get_sol()
 
-        ans = -1
-        # print(f'Answer part 2 is : {ans}')
+        ans = np.sum(ans)
+        # print(f'Answer part 1 is : {ans}')
+        print(f'Answer part 2 is : {count}')
+
 
 
 if __name__ == "__main__":
     file_name = 'input/input_day10.txt'
-    # file_name = 'input/input_day10_test.txt'
+    file_name = 'input/input_day10_test.txt'
 
     app = Day10(file_name)
     app.part1()
