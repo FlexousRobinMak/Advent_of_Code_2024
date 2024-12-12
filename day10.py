@@ -92,6 +92,7 @@ class Day10:
         return np.array(data_output).astype(int)
 
     def part1(self):
+        
         data = self.load_text(self.file_name)
         
         topomap = TopoMap(data)
