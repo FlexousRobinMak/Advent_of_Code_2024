@@ -32,15 +32,32 @@ class Garden:
                 plant = self.map[i_row, i_col]
                 loc = [int(i_row), int(i_col)]
                 if not self.search_map[loc[0], loc[1]]:
-                    self.explore_plot(plant, loc)
-                    plots.append(self.plot_temp)
-                    self.perim.append(self.perim_temp)
-                    self.price.append(len(self.plot_temp)*self.perim_temp)
-                    self.plot_temp = []
-                    self.perim_temp = 0
+                    plot_res, perim_res  = self.explore_plot(plant, loc, [], 0)
+                    # plot_res, perim_res  = self.explore_plot_old(plant, loc, [], 0)
+                    # plot_res, perim_res  = self.explore_plot_new(plant, loc, [], 0)
+                    print(plot_res,perim_res)
+                    plots.append(plot_res)
+                    self.perim.append(perim_res)
+                    self.price.append(len(plot_res)*perim_res)
         return plots
 
-    def explore_plot(self, plant, loc):
+    def explore_plot_new1(self, plant, loc, plot, perim):
+        plot.append([loc[0], loc[1]])
+        self.search_map[loc[0], loc[1]] = True
+        perim += 4
+        for dir_check in self.dir_all:
+            next_loc = loc+dir_check
+            loc_val = self.map[loc[0], loc[1]]
+            if ((0 <= next_loc[0] <= self.map.shape[0] - 1) and
+                    (0 <= next_loc[1] <= self.map.shape[1] - 1)):
+                next_val = self.map[next_loc[0], next_loc[1]]
+                if (next_val == plant):
+                    perim += -1
+                    if not self.search_map[next_loc[0], next_loc[1]]:
+                        self.explore_plot(plant, next_loc,plot,perim)
+        return plot, perim
+    
+    def explore_plot(self, plant, loc, plot, perim):
         self.plot_temp.append([loc[0], loc[1]])
         self.search_map[loc[0], loc[1]] = True
         self.perim_temp += 4
@@ -53,7 +70,24 @@ class Garden:
                 if (next_val == plant):
                     self.perim_temp += -1
                     if not self.search_map[next_loc[0], next_loc[1]]:
-                        self.explore_plot(plant, next_loc)
+                        self.explore_plot(plant, next_loc,[],0)
+        return self.plot_temp, self.perim_temp
+    
+    def explore_plot_new2(self, plant, loc, plot, perim):
+        plot.append([loc[0], loc[1]])
+        self.search_map[loc[0], loc[1]] = True
+        perim += 4
+        for dir_check in self.dir_all:
+            next_loc = loc+dir_check
+            loc_val = self.map[loc[0], loc[1]]
+            if ((0 <= next_loc[0] <= self.map.shape[0] - 1) and
+                    (0 <= next_loc[1] <= self.map.shape[1] - 1)):
+                next_val = self.map[next_loc[0], next_loc[1]]
+                if (next_val == plant):
+                    perim += -1
+                    if not self.search_map[next_loc[0], next_loc[1]]:
+                        self.explore_plot_new(plant, next_loc,plot,perim)
+        return plot, perim
 
 
 class Day12:

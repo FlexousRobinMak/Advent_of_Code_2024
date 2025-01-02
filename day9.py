@@ -213,5 +213,5 @@ if __name__ == "__main__":
     # file_name = 'input/input_day9.txt'
     file_name = 'input/input_day9_test.txt'
     app = Day9(file_name)
-    # app.part1()
-    app.part2()
+    app.part1()
+    # app.part2()
