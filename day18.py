@@ -61,7 +61,7 @@ class Ram:
     def get_lowest_f(self, fin_score):
         while self.set_open:
             node = heapq.heappop(self.set_open)
-            self.remove_set(self.set_closed, node)
+            self.add_set(self.set_closed, node)
             score = node[4]
             if score > fin_score:
                 self.add_set(self.set_closed, node)
@@ -106,7 +106,7 @@ class Ram:
         set_in.remove(node)
 
     def get_next(self, node):
-        fact = 1
+        fact =1
         loc = node[1]
         direc = node[2]
         h_score = node[4]
@@ -119,12 +119,7 @@ class Ram:
                 loc_sign = self.map[loc_check]
                 path = node[5]
                 if loc_sign == '.' or loc_sign == 'E':
-                    if (direc == direction):
-                        f_score = h_score + 1 + self.dist_end(loc_check)*fact
-                        path += ((loc_check),)
-                        neighbor_nodes.add(
-                            (f_score+1, loc_check, direction, self.loc_end, h_score+1, path))
-                    elif (direc == (-direction[0], -direction[1])):
+                    if (direc == (-direction[0], -direction[1])):
                         continue
                     else:
                         f_score = h_score + 1 + \
@@ -190,7 +185,7 @@ class Ram:
         return low_score
 
 
-class Day16:
+class Day18:
     def __init__(self, file_name_input):
         self.file_name = file_name_input
 
@@ -205,18 +200,18 @@ class Day16:
                 data_output.append(tuple(map(int,line)))
         return data_output.copy()
 
-    def part1_2(self):
-        map_input = self.load_text(self.file_name)
+    def part1(self):
+        self.map_input = self.load_text(self.file_name)
         # ram = Ram(map_input[:1024])
-        ram = Ram(map_input[:12])
+        ram = Ram(self.map_input[:12])
         # self.ram = ram
         sol = ram.solve()
         
         finish_node = ram.finish_node
-        finish_paths = finish_node[5]
+        self.finish_paths = finish_node[5]
         map_visited = ram.map
         
-        for step in finish_paths:
+        for step in self.finish_paths:
             map_visited[step] = 'O'
             
         print(map_visited)
@@ -224,6 +219,12 @@ class Day16:
         
         ans = finish_node[4]
         print(f'Answer part 1 is : {ans}')
+        
+    def part2(self):
+        print(self.map_input)
+        for step in self.finish_paths:
+            if step in self.map_input:
+                print(step)
 
 
 if __name__ == "__main__":
@@ -233,13 +234,13 @@ if __name__ == "__main__":
     file_name = 'input/input_day18_test.txt'
     # file_name = 'input/input_day18_test2.txt'
 
-    app = Day16(file_name)
+    app = Day18(file_name)
     start = time.time()
-    app.part1_2()
+    app.part1()
     end = time.time()
     print(f'\nevaluation time part 1 and 2 : {end - start} sec')
 
-    # start = time.time()
-    # app.part2()
-    # end = time.time()
-    # print(f'evaluation time part 2 : {end - start} sec')
+    start = time.time()
+    app.part2()
+    end = time.time()
+    print(f'evaluation time part 2 : {end - start} sec')
